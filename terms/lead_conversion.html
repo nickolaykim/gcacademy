@@ -1,0 +1,169 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертация лида | Глоссарий Битрикс24</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        nav {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin-right: 15px;
+        }
+        nav ul li a {
+            font-weight: bold;
+            color: #0066cc;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .to-top {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            background: #0066cc;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 100;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .to-top:hover {
+            opacity: 1;
+            text-decoration: none;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        ul li {
+            margin-bottom: 8px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="../index.html">Главная</a></li>
+            <li><a href="../glossary.html">Основные термины</a></li>
+            <li><a href="../workflow.html">Автоматизация</a></li>
+            <li><a href="../training.html">Другие понятия</a></li>
+        </ul>
+    </nav>
+
+    <div class="section">
+        <h1>🔹 Конвертация лида</h1>
+
+        <p>Конвертация лида — это процесс превращения лида в контакт, сделку и, при необходимости, компанию в Битрикс24.</p>
+
+        <h2>Пример:</h2>
+        <ul>
+            <li>Менеджер проверил интерес потенциального клиента (лида).</li>
+            <li>Нажал кнопку «Конвертировать» в карточке лида.</li>
+            <li>Битрикс24 автоматически создал контакт, сделку и/или компанию на основе данных лида.</li>
+        </ul>
+
+        <h2>Важно знать:</h2>
+        <p>Конвертация лида позволяет перевести потенциального клиента в активную работу в CRM. Этот процесс структурирует данные, связывая лид с другими сущностями (контакт, сделка, компания), и запускает дальнейшие этапы продаж или взаимодействия.</p>
+
+        <p><strong>Запомни:</strong> Конвертация лида — это переход от «черновика клиента» к полноценной работе с клиентом в системе.</p>
+    </div>
+
+    <a href="#top" class="to-top">▲ Наверх</a>
+</body>
+</html>
