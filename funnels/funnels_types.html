@@ -1,0 +1,334 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виды воронок в Битрикс24</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            line-height: 1.8;
+            margin: 0 auto;
+            max-width: 800px;
+            padding: 30px;
+            color: #1a2526;
+            background: #fff;
+        }
+        h1, h2, h3 {
+            color: #1a3c6e;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        h2 {
+            font-size: 22px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        h3 {
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        p {
+            margin: 15px 0;
+        }
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 15px;
+        }
+        li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #1a3c6e;
+            font-size: 18px;
+        }
+        nav {
+            background: #f4f4f4;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+        }
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #1a3c6e;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .emoji {
+            font-size: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .section {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border: 1px solid #e8e8e8;
+        }
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background: #e0e0e0;
+            margin: 40px 0;
+        }
+        .to-top-fixed {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #007bff;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: background 0.3s;
+            z-index: 1000;
+        }
+        .to-top-fixed:hover {
+            background: #0056b3;
+            text-decoration: none;
+        }
+        .to-top-fixed::after {
+            content: "▲";
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            h2 {
+                font-size: 20px;
+                margin-top: 30px;
+            }
+            h3 {
+                font-size: 16px;
+            }
+            p {
+                font-size: 15px;
+            }
+            ul {
+                padding-left: 20px;
+            }
+            li {
+                font-size: 15px;
+                padding-left: 10px;
+            }
+            li::before {
+                font-size: 16px;
+            }
+            nav {
+                padding: 10px;
+            }
+            nav a {
+                margin-right: 15px;
+                font-size: 14px;
+            }
+            .section {
+                padding: 15px;
+            }
+            .to-top-fixed {
+                padding: 6px 12px;
+                font-size: 14px;
+                bottom: 15px;
+                left: 15px;
+            }
+            .to-top-fixed::after {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="main-nav">
+        <a href="../index.html">Главная</a>
+        <a href="funnel_creation/funnel_creation.html">Создание воронки</a>
+        <a href="#main-nav">Виды воронок</a>
+        <a href="../glossary.html">Глоссарий</a>
+    </nav>
+
+    <div class="section">
+        <h1><span class="emoji">📘</span> Виды воронок в Битрикс24</h1>
+        <p>Воронки в Битрикс24 можно настроить под разные задачи и отрасли. Ниже представлен список воронок, которые помогут оптимизировать процессы в вашем бизнесе.</p>
+    </div>
+
+    <div class="section">
+        <h2><span class="emoji">📊</span> <a href="funnel_booking/funnel_booking.html">Воронка бронирования</a></h2>
+        <p><strong>Кому подходит:</strong> Всем, у кого существуют брони (салоны красоты, парикмахерские).</p>
+        <p><strong>Основные функции:</strong></p>
+        <ul>
+            <li>Создание Битрикса и воронок</li>
+            <li>Поля, добавление ресурсов</li>
+            <li>Формы для записи</li>
+            <li>Триггеры и роботы</li>
+            <li>Автонапоминания клиенту</li>
+            <li>Аналитика</li>
+        </ul>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section">
+        <h2><span class="emoji">📊</span> <a href="funnel_sales_warehouse/funnel_sales_warehouse.html">Воронка продаж для склада</a></h2>
+        <p><strong>Кому подходит:</strong> Складам, работающим с продажами (например, кондитерские цеха).</p>
+        <p><strong>Основные функции:</strong></p>
+        <ul>
+            <li>Автозадачи / роботы</li>
+            <li>Автонапоминания клиенту</li>
+            <li>Аналитика</li>
+        </ul>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section">
+        <h2><span class="emoji">📊</span> Воронка закупа (базовая)</h2>
+        <p><strong>Кому подходит:</strong> Производственным компаниям, торговым компаниям, строительным компаниям, крупным ритейлерам, фармкомпаниям, компаниям с быстро меняющимся ассортиментом.</p>
+        <p><strong>Основные функции:</strong></p>
+        <ul>
+            <li>Подключение источников</li>
+            <li>Форма воронки</li>
+            <li>Автозадачи / роботы</li>
+            <li>Автонапоминания клиенту</li>
+            <li>Аналитика</li>
+        </ul>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section">
+        <h2><span class="emoji">📊</span> Воронка кадров</h2>
+        <p><strong>Кому подходит:</strong> Предприятиям со штатом 5+ сотрудников, с быстрым ростом, с часто меняющимися кадрами, со сложными должностями, с активной программой обучения и развития.</p>
+        <p><strong>Основные функции:</strong></p>
+        <ul>
+            <li>Подключение источников</li>
+            <li>Форма воронки</li>
+            <li>Автозадачи / роботы</li>
+            <li>Автонапоминания клиенту</li>
+            <li>Аналитика</li>
+        </ul>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section">
+        <h2><span class="emoji">📊</span> Воронка производства</h2>
+        <p><strong>Кому подходит:</strong> Пищевым производствам, производствам оборудования, мебельным производствам, металлопроизводствам, производствам текстиля.</p>
+        <p><strong>Основные функции:</strong></p>
+        <ul>
+            <li>Подключение источников</li>
+            <li>Форма воронки</li>
+            <li>Автозадачи / роботы</li>
+            <li>Автонапоминания клиенту</li>
+            <li>Аналитика</li>
+        </ul>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section">
+        <h2><span class="emoji">📊</span> Воронка для стоматологий</h2>
+        <p><strong>Кому подходит:</strong> Стоматологическим клиникам.</p>
+        <p><strong>Основные функции:</strong></p>
+        <ul>
+            <li>Подключение источников</li>
+            <li>Форма воронки</li>
+            <li>Автозадачи / роботы</li>
+            <li>Автонапоминания клиенту</li>
+            <li>Аналитика</li>
+        </ul>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section">
+        <h2><span class="emoji">📊</span> Воронка по обслуживанию автомобилей</h2>
+        <p><strong>Кому подходит:</strong> СТО и пунктам замены масла (ПЗМ).</p>
+        <p><strong>Основные функции:</strong></p>
+        <ul>
+            <li>Подключение источников</li>
+            <li>Форма воронки</li>
+            <li>Автозадачи / роботы</li>
+            <li>Автонапоминания клиенту</li>
+            <li>Аналитика</li>
+        </ul>
+    </div>
+
+    <a href="#main-nav" class="to-top-fixed">В начало</a>
+
+    <script>
+        document.querySelector('.to-top-fixed').addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector('#main-nav');
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
