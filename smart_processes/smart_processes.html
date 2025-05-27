@@ -1,0 +1,220 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart-процессы в Битрикс24 | Год</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0 20px;
+            position: relative;
+            min-height: 100vh;
+            color: #333;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        nav {
+            background: #f0f0f0;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin-right: 20px;
+        }
+        nav ul li a {
+            font-weight: bold;
+            color: #0066cc;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            color: #004d40;
+        }
+        .section {
+            margin-bottom: 50px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .to-top {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            background: #0066cc;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            z-index: 100;
+            opacity: 0.8;
+            transition: opacity 0.3s, background 0.3s;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .to-top:hover {
+            opacity: 1;
+            background: #005bb5;
+            text-decoration: none;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 26px;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        ul li, ol li {
+            margin-bottom: 10px;
+        }
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .example {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #0066cc;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .note {
+            color: #555;
+            font-style: italic;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="../index.html">Главная</a></li>
+            <li><a href="../glossary.html">Глоссар</a></li>
+            <li><a href="smart_process_types.html">Типы Smart-процессов</a></li>
+            <li><a href="smart_process_creation.html">Создание Smart-процесса</a></li>
+        </ul>
+    </nav>
+
+    <div class="section">
+        <h1>📘 Smart-процессы в Битрикс24</h1>
+
+        <p>🔹 Smart-процессы — это пользовательские сущности в Битрикс24, которые позволяют создавать собственные типы данных для автоматизации и управления специфическими задачами, выходящими за рамки стандартной CRM.</p>
+
+        <h2>Что такое Smart-процессы?</h2>
+        <p>Smart-процессы представляют собой гибкий инструмент для настройки процессов, которые не покрываются стандартными сущностями, такими как сделки или лиды. Они позволяют создавать собственные воронки, этапы, поля и автоматизацию, адаптированные под уникальные задачи.</p>
+        <ul>
+            <li>Аналогия: если CRM-сделка — это шаблон для продаж, Smart-процессы — это «конструктор» для любых задач.</li>
+            <li>Применение: управление заявками, бронированием, отчётами, арендой, согласованием документов.</li>
+        </ul>
+
+        <h2>Примеры Smart-процессов</h2>
+        <div class="example">
+            <p><strong>Кейс 1: Бронирование в коворкинге</strong></p>
+            <p>Smart-процесс «Бронирование помещений» включает этапы: Заявка → Подтверждение → Оплата → Завершено. Поля: клиент, дата брони, помещение. Робот отправляет уведомление клиенту при подтверждении.</p>
+            <p><strong>Кейс 2: Техническая поддержка</strong></p>
+            <p>Smart-процесс «Заявки на обслуживание» с этапами: Новый запрос → В работе → Решено. Поля: описание проблемы, приоритет, ответственный. Триггер создаёт задачу технику.</p>
+        </div>
+
+        <h2>Возможности Smart-процессов</h2>
+        <ul>
+            <li><strong>Создание сущностей</strong>: Настройка собственных типов данных с уникальными полями.</li>
+            <li><strong>Воронки и этапы</strong>: Структурирование процессов, как в CRM.</li>
+            <li><strong>Автоматизация</strong>: Использование роботов и триггеров для автоматических действий (уведомления, задачи, письма).</li>
+            <li><strong>Интеграции</strong>: Подключение к мессенджерам, API, другим модулям Битрикс24.</li>
+            <li><strong>Аналитика</strong>: Отчёты по процессам, как в CRM.</li>
+        </ul>
+        <p class="note">Подробности о типах см. в разделе <a href="smart_process_types.html">Типы Smart-процессов</a>, а о настройке — в <a href="smart_process_creation.html">Создание Smart-процесса</a>.</p>
+
+        <h2>Особенности работы</h2>
+        <ul>
+            <li>Smart-процессы интегрируются с карточками элементов, где хранится история действий. См. <a href="../terms/card.html">Карточка</a>.</li>
+            <li>Поддерживают автоматизацию через роботы, как в сделках. См. <a href="../robots/robots.html">Роботы</a>.</li>
+            <li>Могут быть связаны с бизнес-процессами для сложной логики. См. <a href="../business_processes/business_processes.html">Бизнес-процессы</a>.</li>
+        </ul>
+
+        <h2>Ограничения</h2>
+        <ul>
+            <li>Требуется тщательная настройка полей и этапов для соответствия бизнесу.</li>
+            <li>Сложные процессы могут потребовать привлечения программиста для API-интеграций.</li>
+            <li>Ограничения по количеству Smart-процессов зависят от тарифа Битрикс24.</li>
+        </ul>
+
+        <p><strong>Запомни:</strong> Smart-процессы — это «своя CRM» для любых задач, от заявок до сложных внутренних процессов. ✅</p>
+    </div>
+
+    <a href="#top" class="to-top">▲ Наверх</a>
+</body>
+</html>
