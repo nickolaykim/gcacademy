@@ -1,0 +1,583 @@
+/* Определение глобальных CSS-переменных для консистентного стиля сайта */
+:root {
+    /* Основной синий цвет для акцентов, ссылок и кнопок */
+    --primary: #3B82F6;
+    /* Более темный синий для ховер-эффектов */
+    --primary-dark: #2563EB;
+    /* Зеленый акцент для декоративных элементов и границ */
+    --accent: #74E497;
+    /* Основной темный цвет текста для заголовков и акцентированного контента */
+    --text: #1E293B;
+    /* Вторичный серый цвет для текста с меньшим приоритетом */
+    --text-secondary: #64748B;
+    /* Фоновый цвет страницы для создания светлого и чистого вида */
+    --bg: #F1F5F9;
+    /* Белый фон для карточек и секций */
+    --card-bg: #FFFFFF;
+    /* Тень для карточек и элементов с эффектом поднятия */
+    --shadow: 0 4px 16px rgba(59,130,246,0.15);
+    /* Цвет границ для элементов, таких как навигация и секции */
+    --border: #E2E8F0;
+    /* Зеленое свечение для ховер-эффектов и акцентов */
+    --glow: 0 0 10px rgba(34,197,94,0.4);
+    /* Градиентный фон для выделенных блоков */
+    --highlight-bg: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(59,130,246,0.1));
+    /* Тень для поля поиска при фокусе */
+    --search-shadow: 0 2px 8px 8px rgba(144, 238, 144, 0.3);
+}
+
+/* Сброс дефолтных отступов и настройка коробочной модели для всех элементов */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Учитывает padding и border в ширине/высоте */
+}
+
+/* Плавная прокрутка страницы для улучшения UX при переходе по якорям */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Базовые стили для тела страницы */
+body {
+    font-family: Arial, sans-serif; /* Простой и читаемый шрифт */
+    line-height: 1.6; /* Удобный межстрочный интервал */
+    max-width: 1080px; /* Ограничение ширины контента для читаемости */
+    margin: 0 auto; /* Центрирование контента */
+    padding: 40px 20px; /* Отступы сверху/снизу и по бокам */
+    background: var(--bg); /* Светлый фоновый цвет */
+    color: var(--text); /* Темный цвет текста */
+    font-size: 15px; /* Базовый размер шрифта */
+    overflow-x: hidden; /* Предотвращение горизонтальной прокрутки */
+}
+
+/* Навигационная панель */
+nav {
+    background: rgba(255, 255, 255, 0.95); /* Полупрозрачный белый фон */
+    backdrop-filter: blur(10px); /* Эффект размытия фона */
+    padding: 12px 24px; /* Внутренние отступы */
+    border-radius: 8px; /* Скругленные углы */
+    margin-bottom: 40px; /* Отступ снизу */
+    box-shadow: var(--shadow); /* Тень для эффекта поднятия */
+    display: flex; /* Гибкое расположение ссылок */
+    align-items: center; /* Вертикальное центрирование */
+    gap: 24px; /* Расстояние между ссылками */
+    border: 1px solid var(--border); /* Тонкая граница */
+}
+
+/* Стили для ссылок в навигации */
+nav a {
+    color: var(--primary); /* Синий цвет текста */
+    font-weight: 600; /* Полужирный шрифт */
+    font-size: 14px; /* Уменьшенный размер шрифта */
+    text-decoration: none; /* Без подчеркивания */
+    text-transform: uppercase; /* Верхний регистр для акцента */
+    position: relative; /* Для позиционирования псевдоэлементов */
+    transition: all 0.3s ease; /* Плавные переходы для ховер-эффектов */
+}
+
+/* Ховер-эффект для ссылок навигации */
+nav a:hover {
+    color: var(--primary-dark); /* Темный синий при наведении */
+    text-shadow: var(--glow); /* Зеленое свечение */
+}
+
+/* Основные секции контента */
+.section {
+    background: var(--card-bg); /* Белый фон карточки */
+    padding: 32px; /* Внутренние отступы */
+    border-radius: 12px; /* Скругленные углы */
+    margin-bottom: 40px; /* Отступ снизу */
+    box-shadow: var(--shadow); /* Тень для эффекта поднятия */
+    border: 1px solid var(--border); /* Тонкая граница */
+    position: relative; /* Для позиционирования псевдоэлементов */
+    overflow: hidden; /* Скрытие переполнения */
+    background: linear-gradient(145deg, var(--card-bg), rgba(59,130,246,0.05)); /* Легкий градиент */
+}
+
+/* Декоративная линия сверху секции */
+.section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), transparent); /* Градиентная линия */
+}
+
+/* Главный заголовок */
+h1 {
+    font-size: 32px; /* Крупный шрифт */
+    font-weight: 700; /* Жирный шрифт */
+    margin-bottom: 24px; /* Отступ снизу */
+    display: flex; /* Гибкое расположение */
+    align-items: center; /* Вертикальное центрирование */
+    gap: 12px; /* Расстояние между элементами */
+    position: relative; /* Для псевдоэлементов */
+    background: linear-gradient(to right, #3B82F6, #22C55E); /* Градиентный текст */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Прозрачный текст для градиента */
+    text-shadow: 0 0 10px rgba(59,130,246,0.5); /* Легкое свечение */
+    animation: gradientShift 4s ease-in-out infinite, shadowPulse 3s ease-in-out infinite; /* Анимации */
+}
+
+/* Декоративные линии для h1 */
+h1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #3B82F6, transparent); /* Линия сверху */
+}
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(270deg, #3B82F6, transparent); /* Линия снизу */
+}
+
+/* Анимация градиента для h1 */
+@keyframes gradientShift {
+    0% { background-position: 0%; }
+    50% { background-position: 100%; }
+    100% { background-position: 0%; }
+}
+
+/* Анимация пульсации тени для h1 */
+@keyframes shadowPulse {
+    0% { text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+    50% { text-shadow: 0 0 20px rgba(59,130,246,0.8); }
+    100% { text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+}
+
+/* Заголовки второго уровня */
+h2 {
+    font-size: 22px; /* Средний размер шрифта */
+    font-weight: 600; /* Полужирный шрифт */
+    color: var(--text); /* Темный цвет */
+    margin: 32px 0 16px; /* Отступы */
+    padding-left: 24px; /* Левый отступ для визуальной иерархии */
+    display: flex; /* Гибкое расположение */
+    align-items: center; /* Центрирование */
+    gap: 8px; /* Расстояние между элементами */
+}
+
+/* Стили для ссылок в h2 */
+h2 a {
+    text-decoration: none; /* Без подчеркивания */
+    color: var(--text); /* Темный цвет */
+    transition: all 0.3s ease; /* Плавный переход */
+}
+
+/* Ховер-эффект для ссылок в h2 */
+h2 a:hover {
+    font-weight: bold; /* Жирный при наведении */
+    background: linear-gradient(to right, #90ee90, #3498db); /* Градиент */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Прозрачный для градиента */
+}
+
+/* Заголовки третьего уровня */
+h3 {
+    font-size: 18px; /* Меньший размер */
+    font-weight: 600; /* Полужирный */
+    color: var(--text); /* Темный цвет */
+    margin: 16px 0 8px; /* Отступы */
+}
+
+/* Параграфы */
+p {
+    font-size: 15px; /* Стандартный размер */
+    color: var(--text-secondary); /* Вторичный серый цвет */
+    margin-bottom: 16px; /* Отступ снизу */
+}
+
+/* Списки */
+ul, ol {
+    margin-bottom: 24px; /* Отступ снизу */
+    padding-left: 32px; /* Левый отступ для маркеров */
+    list-style: none; /* Без стандартных маркеров */
+}
+
+/* Элементы списков */
+ul li, ol li {
+    margin-bottom: 16px; /* Отступ между пунктами */
+    font-size: 15px; /* Размер шрифта */
+    color: var(--text-secondary); /* Серый цвет */
+    position: relative; /* Для псевдоэлементов */
+    padding-left: 24px; /* Отступ для маркеров */
+}
+
+/* Маркеры для списков */
+ul li::before, ol li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--accent); /* Зеленый круг */
+    border-radius: 50%;
+}
+
+/* Нумерация для ol */
+ol li::before {
+    content: counter(list-counter); /* Счетчик */
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary); /* Синий цвет */
+    width: auto;
+    height: auto;
+    background: none; /* Без фона */
+    counter-increment: list-counter;
+}
+ol {
+    counter-reset: list-counter; /* Сброс счетчика */
+}
+
+/* Вложенные списки с дисковыми маркерами */
+ul.nested-list {
+    padding-left: 20px; /* Меньший отступ */
+    list-style-type: disc; /* Дисковые маркеры */
+}
+ul.nested-list li::before {
+    display: none; /* Скрытие кастомных маркеров */
+}
+
+/* Жирный текст */
+strong {
+    color: var(--text); /* Темный цвет */
+    font-weight: 600; /* Полужирный */
+}
+
+/* Блоки аккордеона */
+.example {
+    background: var(--card-bg); /* Белый фон */
+    padding: 24px; /* Отступы */
+    border-radius: 12px; /* Скругленные углы */
+    margin-bottom: 24px; /* Отступ снизу */
+    border-left: 4px solid var(--accent); /* Зеленая граница слева */
+    border-right: 4px solid var(--accent); /* Зеленая граница справа */
+    position: relative; /* Для псевдоэлементов */
+    cursor: pointer; /* Курсор указателя */
+    transition: all 0.3s ease; /* Плавный переход */
+    box-shadow: 0 0 6px rgba(34,197,94,0.3), 0 0 12px rgba(34,197,94,0.2); /* Тень */
+}
+
+/* Ховер-эффект для аккордеона */
+.example:hover {
+    box-shadow: var(--shadow), var(--glow); /* Усиленная тень и свечение */
+}
+
+/* Контент аккордеона */
+.example-content {
+    max-height: 0; /* Скрыт по умолчанию */
+    overflow: hidden; /* Скрытие переполнения */
+    opacity: 0; /* Прозрачный */
+    transform: scaleY(0); /* Сжат по вертикали */
+    transform-origin: top; /* Точка трансформации */
+    transition: max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease; /* Плавный переход */
+}
+
+/* Активный контент аккордеона */
+.example-content.active {
+    max-height: 1000px; /* Максимальная высота для раскрытия */
+    opacity: 1; /* Полная видимость */
+    transform: scaleY(1); /* Полный размер */
+}
+
+/* Заголовок аккордеона */
+.example-header {
+    font-weight: 600; /* Полужирный */
+    color: var(--text); /* Темный цвет */
+    margin-bottom: 12px; /* Отступ снизу */
+    font-size: 16px; /* Размер шрифта */
+    display: flex; /* Гибкое расположение */
+    align-items: center; /* Центрирование */
+    height: 32px; /* Фиксированная высота */
+    padding-top: 2px; /* Легкий сдвиг вниз */
+}
+
+/* Стили для ссылок в заголовке аккордеона */
+.example-header a {
+    color: var(--text); /* Темный цвет */
+    text-decoration: none; /* Без подчеркивания */
+    transition: all 0.3s ease; /* Плавный переход */
+}
+
+/* Ховер-эффект для ссылок в заголовке аккордеона */
+.example-header a:hover {
+    font-weight: bold; /* Жирный */
+    background: linear-gradient(to right, #90ee90, #3498db); /* Градиент */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Прозрачный для градиента */
+}
+
+/* Параграфы внутри аккордеона */
+.example-content p {
+    font-size: 15px; /* Стандартный размер */
+    color: var(--text-secondary); /* Серый цвет */
+    margin-bottom: 16px; /* Отступ снизу */
+}
+
+/* Списки внутри аккордеона */
+.example-content ul {
+    padding-left: 28px; /* Отступ для маркеров */
+    margin-bottom: 16px; /* Отступ снизу */
+}
+.example-content ul li {
+    font-size: 15px; /* Размер шрифта */
+    color: var(--text-secondary); /* Серый цвет */
+    margin-bottom: 12px; /* Отступ между пунктами */
+}
+
+/* Заметки с префиксом «Запомни:» */
+.note {
+    display: flex; /* Гибкое расположение */
+    align-items: flex-start; /* Выравнивание по верхнему краю */
+    gap: 12px; /* Отступ между значком и текстом */
+    margin-bottom: 16px; /* Отступ снизу */
+    font-size: 15px; /* Размер шрифта */
+    color: var(--text-secondary); /* Серый цвет */
+}
+
+/* Стили для strong внутри заметок */
+.note strong {
+    color: var(--text); /* Темный цвет */
+}
+
+/* Восклицательный знак для заметок «Запомни:» */
+.note.important::before {
+    content: '!'; /* Символ восклицательного знака */
+    color: #E11D48; /* Розово-красный цвет */
+    font-size: 28px; /* Увеличенный размер */
+    font-weight: bold; /* Жирный шрифт */
+    text-shadow: 0 0 8px rgba(225, 29, 72, 0.5); /* Мягкое сияние */
+    animation: bounce 1.5s infinite; /* Анимация прыжка */
+}
+
+/* Анимация прыжка для восклицательного знака */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); } /* Начало и конец */
+    50% { transform: translateY(-5px); } /* Подъем */
+}
+
+/* Выделенные блоки */
+.highlight {
+    background: var(--highlight-bg); /* Градиентный фон */
+    padding: 16px 24px; /* Отступы */
+    border-radius: 8px; /* Скругленные углы */
+    margin: 16px 0; /* Отступы сверху/снизу */
+    box-shadow: 0 0 12px rgba(34,197,94,0.2); /* Легкая тень */
+    border: 1px solid rgba(34,197,94,0.3); /* Тонкая граница */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Плавный переход */
+}
+
+/* Ховер-эффект для выделенных блоков */
+.highlight:hover {
+    transform: scale(1.02); /* Легкое увеличение */
+    box-shadow: 0 0 16px rgba(34,197,94,0.3); /* Усиленная тень */
+}
+
+/* Параграфы внутри выделенных блоков */
+.highlight p {
+    font-size: 16px; /* Чуть крупнее */
+    font-weight: 600; /* Полужирный */
+    color: var(--text); /* Темный цвет */
+    display: flex; /* Гибкое расположение */
+    align-items: center; /* Центрирование */
+    gap: 12px; /* Расстояние между элементами */
+}
+
+/* Иконки */
+.icon-import, .icon-header {
+    width: 12px; /* Размер */
+    height: 12px;
+    fill: var(--primary); /* Синий цвет */
+    margin-right: 8px; /* Отступ справа */
+    transition: transform 0.3s ease; /* Плавный переход */
+}
+.icon-header {
+    width: 16px; /* Крупнее */
+    height: 16px;
+}
+
+/* Ховер-эффект для иконок */
+.icon-import:hover, .icon-header:hover {
+    transform: scale(1.2); /* Увеличение */
+}
+
+/* Специальные заметки */
+.note.first-note {
+    font-size: 14px; /* Меньший шрифт */
+    color: var(--text); /* Темный цвет */
+    font-weight: 600; /* Полужирный */
+    font-family: 'Open Sans', sans-serif; /* Альтернативный шрифт */
+    margin-top: 12px; /* Отступ сверху */
+    padding: 20px; /* Внутренние отступы */
+    position: relative; /* Для псевдоэлементов */
+}
+
+/* Красная линия слева для первой заметки */
+.note.first-note::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10%;
+    height: 80%;
+    width: 4px;
+    background: #EF4444; /* Красный цвет */
+    box-shadow: 0 0 10px #EF4444, 0 0 20px #EF4444; /* Свечение */
+}
+
+/* Кнопка «Наверх» */
+.to-top {
+    position: fixed; /* Фиксированное положение */
+    left: 40px; /* Отступ слева */
+    bottom: 40px; /* Отступ снизу */
+    background: var(--primary); /* Синий фон */
+    color: var(--text); /* Темный текст */
+    padding: 12px; /* Отступы */
+    border-radius: 8px; /* Скругленные углы */
+    font-size: 16px; /* Размер шрифта */
+    font-weight: 700; /* Жирный */
+    text-decoration: none; /* Без подчеркивания */
+    box-shadow: var(--shadow), var(--glow); /* Тень и свечение */
+    transition: all 0.3s ease; /* Плавный переход */
+    z-index: 100; /* Высокий уровень наложения */
+    width: 48px; /* Фиксированная ширина */
+    height: 48px; /* Фиксированная высота */
+    display: flex; /* Центрирование содержимого */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ховер-эффект для кнопки «Наверх» */
+.to-top:hover {
+    background: var(--primary-dark); /* Темный синий */
+    transform: translateY(-4px); /* Подъем */
+}
+
+/* Поле поиска */
+#search {
+    margin: 20px 0; /* Отступы */
+    width: 100%; /* Полная ширина */
+    padding: 10px; /* Внутренние отступы */
+    font-size: 16px; /* Размер шрифта */
+    border: 1px solid var(--border); /* Граница */
+    border-radius: 12px; /* Скругленные углы */
+    box-shadow: var(--search-shadow); /* Тень */
+    transition: all 0.3s ease; /* Плавный переход */
+}
+
+/* Фокус для поля поиска */
+#search:focus {
+    outline: none; /* Без обводки */
+    border-color: var(--primary); /* Синяя граница */
+    box-shadow: 0 2px 8px 8px rgba(144, 238, 144, 0.5); /* Усиленная тень */
+}
+
+/* Скрытые элементы */
+.hidden {
+    display: none; /* Скрытие */
+}
+
+/* Полоса прокрутки */
+::-webkit-scrollbar {
+    width: 6px; /* Тонкая полоса */
+}
+::-webkit-scrollbar-track {
+    background: var(--bg); /* Фон полосы */
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary); /* Синий бегунок */
+    border-radius: 3px; /* Скругленные углы */
+}
+
+/* Медиа-запрос для адаптации на экранах до 768px */
+@media (max-width: 768px) {
+    nav {
+        padding: 12px; /* Уменьшенные отступы */
+    }
+    nav a {
+        font-size: 12px; /* Меньший шрифт */
+    }
+    .section {
+        padding: 20px; /* Уменьшенные отступы */
+    }
+    h1 {
+        font-size: 28px; /* Меньший размер */
+    }
+    h2 {
+        font-size: 20px; /* Меньший размер */
+    }
+    .to-top {
+        left: 20px; /* Ближе к краю */
+        bottom: 20px; /* Выше */
+    }
+}
+
+/* Таблицы */
+table {
+    width: 100%; /* Полная ширина */
+    border-collapse: collapse; /* Без промежутков */
+    margin-top: 16px; /* Отступ сверху */
+}
+
+/* Ячейки таблицы */
+th, td {
+    border: 1px solid var(--border); /* Граница */
+    padding: 12px; /* Отступы */
+    text-align: left; /* Выравнивание по левому краю */
+    font-size: 15px; /* Размер шрифта */
+    color: var(--text-secondary); /* Серый цвет */
+}
+
+/* Заголовки таблицы */
+th {
+    background: var(--highlight-bg); /* Градиентный фон */
+    font-weight: 600; /* Полужирный */
+    color: var(--text); /* Темный цвет */
+}
+
+/* Подэтапы */
+.substep {
+    margin-left: 20px; /* Отступ слева */
+    margin-bottom: 20px; /* Отступ снизу */
+    padding: 10px; /* Внутренние отступы */
+    background: var(--card-bg); /* Белый фон */
+    border-left: 3px solid var(--primary); /* Синяя граница слева */
+    border-radius: 4px; /* Легкое скругление */
+}
+
+/* Изображения */
+img {
+    max-width: 100%; /* Адаптивная ширина */
+    height: auto; /* Сохранение пропорций */
+    display: block; /* Блочный элемент */
+    margin: 20px auto; /* Центрирование */
+}
+
+/* Фигуры с подписями */
+figure {
+    margin: 20px 0; /* Отступы */
+    text-align: center; /* Центрирование */
+}
+
+/* Подписи к фигурам */
+figcaption {
+    font-size: 14px; /* Меньший шрифт */
+    color: var(--text-secondary); /* Серый цвет */
+    margin-top: 10px; /* Отступ сверху */
+    font-style: italic; /* Курсив */
+}

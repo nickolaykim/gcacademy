@@ -1,0 +1,183 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Телефония в Битрикс24</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav>
+        <a href="../index.html">Главная</a>
+        <a href="../glossary.html">Глоссарий</a>
+        <a href="../workflow.html">Рабочие процессы</a>
+        <a href="../training.html">Обучение</a>
+        <a href="../interview.html">Интервью</a>
+        <a href="../rules.html">Правила</a>
+    </nav>
+
+    <div class="section">
+        <h1>Телефония в Битрикс24</h1>
+        <p>Телефония в <a href="../terms/card.html">Битрикс24</a> — это инструмент для интеграции телефонных звонков в <a href="../terms/card.html">CRM</a>, позволяющий автоматизировать обработку входящих и исходящих вызовов, фиксировать их в карточках клиентов и управлять коммуникациями.</p>
+        <p><strong>Зачем нужна:</strong> Обеспечивает централизованное управление звонками, повышает эффективность работы с клиентами и сохраняет историю общения.</p>
+        <p><strong>Применение:</strong> Используется для автоматического создания <a href="../terms/lead.html">лидов</a> при входящих звонках, записи разговоров, маршрутизации вызовов и аналитики активности менеджеров.</p>
+    </div>
+
+    <div class="section">
+        <h2>Подключение SIP-номера в Битрикс24 (на примере оператора X Telecom)</h2>
+        <div class="example">
+            <div class="example-header">Шаг 1: Уточните, на кого зарегистрирован номер клиента</div>
+            <div class="example-content">
+                <p><strong>Зачем это нужно:</strong> По законодательству Казахстана все SIP-номера должны быть оформлены на юридическое лицо (<a href="../terms/company.html">компанию</a>). Если номер зарегистрирован на физическое лицо, его необходимо переоформить.</p>
+                <p><strong>Как это узнать:</strong></p>
+                <ul>
+                    <li>Свяжитесь с клиентом через чат, Telegram, WhatsApp или по телефону.</li>
+                    <li>Спросите: «Номер +77777777777 сейчас зарегистрирован на физическое лицо (например, на вас лично) или на <a href="../terms/company.html">компанию</a>?»</li>
+                    <li>Если клиент не знает, попросите:</li>
+                    <ul class="nested-list">
+                        <li>Фото удостоверения личности владельца номера (с обеих сторон).</li>
+                        <li>Или пусть клиент проверит в личном кабинете на сайте оператора X Telecom.</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+        <div class="example">
+            <div class="example-header">Шаг 2: Если номер оформлен на физлицо — перевести его на юрлицо</div>
+            <div class="example-content">
+                <p><strong>Что это значит:</strong> Номер нужно переоформить — сначала перевести к оператору X Telecom, а затем зарегистрировать на <a href="../terms/company.html">компанию</a>.</p>
+                <p><strong>Как это сделать:</strong></p>
+                <ul>
+                    <li>Напишите в WhatsApp менеджеру X Telecom по номеру +77009991111.</li>
+                    <li>Пример сообщения: «Здравствуйте! Хотим перевести номер +77777777777 с физического лица на юридическое и подключить SIP. Что для этого нужно?»</li>
+                    <li>Менеджер отправит список документов. Обычно требуется:</li>
+                    <ul class="nested-list">
+                        <li>Фото удостоверения владельца номера.</li>
+                        <li>Фото подписи и печати <a href="../terms/company.html">компании</a> (на белом фоне).</li>
+                        <li>БИН и название <a href="../terms/company.html">компании</a> (например, ТОО «Пример»).</li>
+                    </ul>
+                    <li>Запросите у клиента эти данные. Напишите: «Пожалуйста, пришлите:</li>
+                    <ul class="nested-list">
+                        <li>Фото удостоверения владельца номера.</li>
+                        <li>Фото подписи и печати.</li>
+                        <li>Название <a href="../terms/company.html">компании</a> и БИН.</li>
+                    </ul>
+                    <li>Перешлите полученные документы менеджеру X Telecom. Он предоставит формы:</li>
+                    <ul class="nested-list">
+                        <li>Заявление на перенос номера.</li>
+                        <li>Регистрационная форма.</li>
+                        <li>Заявление на подключение тарифа.</li>
+                    </ul>
+                    <li>Заполните формы и отправьте клиенту для подписи.</li>
+                    <li>Получите подписанные документы и отправьте их менеджеру X Telecom.</li>
+                </ul>
+                <p>Процесс занимает 1–2 рабочих дня.</p>
+            </div>
+        </div>
+        <div class="example">
+            <div class="example-header">Шаг 3: Получите от X Telecom данные для подключения</div>
+            <div class="example-content">
+                <p>Когда документы будут обработаны и номер зарегистрирован, X Telecom пришлёт:</p>
+                <ul>
+                    <li>Логин SIP.</li>
+                    <li>Пароль SIP.</li>
+                    <li>Адрес сервера (например, sip.xtelecom.kz).</li>
+                </ul>
+                <p>Сохраните эти данные для настройки в <a href="../terms/card.html">Битрикс24</a>.</p>
+            </div>
+        </div>
+        <div class="example">
+            <div class="example-header">Шаг 4: Подключите SIP-номер в Битрикс24</div>
+            <div class="example-content">
+                <p><strong>Как это сделать:</strong></p>
+                <ul>
+                    <li>Откройте <a href="../terms/card.html">Битрикс24</a> с правами администратора.</li>
+                    <li>В левом меню выберите «<a href="../terms/card.html">CRM</a>» → «Интеграции» → «Телефония».</li>
+                    <li>Нажмите «Подключить SIP АТС».</li>
+                    <li>В появившемся окне выберите «Облачная SIP АТС».</li>
+                    <li>Введите:</li>
+                    <ul class="nested-list">
+                        <li>Логин SIP (из письма от X Telecom).</li>
+                        <li>Пароль SIP.</li>
+                        <li>Адрес сервера (например, sip.xtelecom.kz).</li>
+                    </ul>
+                    <li>Нажмите «Сохранить».</li>
+                </ul>
+                <p><strong>Если возникла ошибка:</strong></p>
+                <ul>
+                    <li><strong>Ошибка 403 или “Forbidden”:</strong> Проверьте, активен ли номер, оплачен ли тариф.</li>
+                    <li><strong>Ошибка 408:</strong> Проверьте адрес сервера, попробуйте альтернативный вариант от X Telecom.</li>
+                    <li>Если ошибка сохраняется, обратитесь в поддержку <a href="../terms/card.html">Битрикс24</a>, отправив лог звонка.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="example">
+            <div class="example-header">Шаг 5: Проверьте подключение</div>
+            <div class="example-content">
+                <p><strong>После подключения:</strong></p>
+                <ul>
+                    <li>Совершите тестовый звонок из <a href="../terms/card.html">Битрикс24</a>.</li>
+                    <li>Убедитесь, что звонок прошел.</li>
+                    <li>Проверьте, отображается ли звонок в <a href="../terms/card.html">CRM</a> (в карточке клиента или разделе «Звонки»).</li>
+                </ul>
+                <p class="note important"><strong>Типовая ошибка</strong>: Если звонки не работают, проверьте SIP-данные, адрес сервера или свяжитесь с X Telecom.</p>
+            </div>
+        </div>
+        <div class="example">
+            <div class="example-header">Шаг 6: Завершите настройку телефонии в Битрикс24</div>
+            <div class="example-content">
+                <p><strong>Для полной настройки:</strong></p>
+                <ul>
+                    <li>Зайдите в раздел «Телефония» в <a href="../terms/card.html">Битрикс24</a>.</li>
+                    <li>Назначьте подключённый номер сотрудникам (через «Пользователи телефонии»).</li>
+                    <li>Настройте маршрутизацию входящих вызовов (на отдел, сотрудника или в <a href="../terms/card.html">CRM</a>).</li>
+                    <li>Включите запись звонков, если требуется.</li>
+                    <li>Укажите расписание (рабочее время) и действия в нерабочее время.</li>
+                    <li>Настройте мелодии (приветствие, ожидание).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="to-top">▲</a>
+    <script src="../script.js"></script>
+</body>
+</html>

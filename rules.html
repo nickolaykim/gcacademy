@@ -1,0 +1,126 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Свод правил для новых сотрудников</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html">Главная</a>
+        <a href="glossary.html">Глоссарий</a>
+        <a href="workflow.html">Этапы работы</a>
+        <a href="training.html">Обучение</a>
+        <a href="interview.html">Собеседование</a>
+    </nav>
+
+    <div class="section">
+        <h1>Свод правил для новых сотрудников</h1>
+        <p>Этот документ — основа нашей совместной работы. Здесь максимально простым языком объяснено, как НЕ надо поступать. Даже если вы впервые в жизни работаете в команде — соблюдение этих правил обезопасит вас от ошибок.</p>
+
+        <div class="example" role="button" tabindex="0" aria-expanded="false">
+            <div class="example-header">Общие правила</div>
+            <div class="example-content">
+                <ul>
+                    <li>Обязательный отклик: если вам написал клиент — вы обязаны ответить. Даже если вам нечего сказать, просто подтвердите, что получили сообщение. Молчание — грубое нарушение.</li>
+                    <li>Только деловая переписка: никогда не пишите клиенту в личные мессенджеры (WhatsApp, Telegram и т.п.). Всё должно быть в корпоративных каналах. Пример: вместо «написал в вотсап» — ставим задачу в системе.</li>
+                    <li>Не откладывайте задачи: если задача просрочена более чем на 2 часа без объяснения — это повод для выговора. Старайтесь сразу оставлять комментарий, если не успеваете.</li>
+                    <li>Фиксируйте всё: если была встреча, звонок или запрос — обязательно оставьте запись в задаче или карточке. Это защищает вас в случае спорной ситуации.</li>
+                    <li>Предупреждайте о сроках: если клиент что-то заказал — сразу сообщите примерную дату готовности. Лучше «через 2 дня», чем «как получится».</li>
+                    <li>Никакой грубости: даже если клиент неправ — вы должны оставаться вежливыми. Эмоции — внутрь, деловой стиль — наружу.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="example" role="button" tabindex="0" aria-expanded="false">
+            <div class="example-header">Для интеграторов</div>
+            <div class="example-content">
+                <ul>
+                    <li>Всё оформляется на клиента: если вы настраиваете Битрикс24 — не регистрируйте его на свою почту. Даже временно. Это нарушение безопасности.</li>
+                    <li>Проверяйте поля и статусы: <a href="terms/deal.html">сделки</a> не должны двигаться вперёд без заполненных обязательных полей. Пример: не заполнили «сумму сделки» — не двигаем.</li>
+                    <li>Используйте шаблоны сообщений: автосообщения клиентам должны быть по шаблонам. Никакой отсебятины — шаблоны уже проверены.</li>
+                    <li>Пишите инструкции: если клиенту выдали доступ — проверьте, что к нему есть понятная инструкция (видео или текст). Без неё — задача не считается закрытой.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="example" role="button" tabindex="0" aria-expanded="false">
+            <div class="example-header">Для отдела продаж</div>
+            <div class="example-content">
+                <ul>
+                    <li>Только правдивые обещания: нельзя обещать клиенту то, чего нет. Даже если хотите «закрыть <a href="terms/deal.html">сделку</a>». Всё, что вы говорите, потом могут использовать как основание для возврата.</li>
+                    <li>Чистота в КП и договорах: не должно быть ошибок, повторов, устаревших данных. Проверяйте всё перед отправкой. Пример: не пишите «акция до 2022 года» — это просто позор.</li>
+                    <li>Заявки обрабатываются быстро: чем дольше клиент ждёт, тем ниже шанс продажи. Максимальное время реакции — 1 час.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="example" role="button" tabindex="0" aria-expanded="false">
+            <div class="example-header">Для дизайнеров</div>
+            <div class="example-content">
+                <ul>
+                    <li>Проверяйте текст: орфографические ошибки в макетах — позор для всей команды. Используйте проверку текста всегда.</li>
+                    <li>Делайте по сетке: все отступы, выравнивание и размеры — строго по макету. Не додумывайте своё.</li>
+                    <li>Учитывайте доступность: текст должен читаться, элементы — быть кликабельными, цвет — быть различимым для всех.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="example" role="button" tabindex="0" aria-expanded="false">
+            <div class="example-header">Для программистов</div>
+            <div class="example-content">
+                <ul>
+                    <li>Кнопки должны работать: не просто выглядеть, а реально выполнять функцию. Пример: кнопка «отправить» без действия — это брак.</li>
+                    <li>Только актуальные данные: если написано «доставка за 3 дня», она должна быть за 3. Обновляйте тексты в коде.</li>
+                    <li>Безопасность — не опция: используйте стандартные методы защиты (OWASP и др.), даже если никто не проверяет. Ошибка в этом — повод для увольнения.</li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="note important"><strong>Важно:</strong> нарушение конфиденциальности — основание для немедленного увольнения и судебного иска. Нельзя передавать логины, пароли, доступы, клиентские данные — даже «просто чтобы показать».</p>
+    </div>
+
+    <a href="#" class="to-top">▲</a>
+    <script src="script.js"></script>
+</body>
+</html>
